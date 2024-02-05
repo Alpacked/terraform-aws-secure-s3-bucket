@@ -1,4 +1,4 @@
-# terrafrom-aws-secure-s3-bucket
+# terraform-aws-secure-s3-bucket
 
 The extended version of the [terraform-aws-s3-bucket](https://github.com/terraform-aws-modules/terraform-aws-s3-bucket) public module with additional features.
 
