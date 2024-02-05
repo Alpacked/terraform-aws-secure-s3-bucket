@@ -2,6 +2,8 @@
 
 The extended version of the [terraform-aws-s3-bucket](https://github.com/terraform-aws-modules/terraform-aws-s3-bucket) public module with additional features.
 
+The goal of the module is to follow the security requirements from the [AWS Security Hub](https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html). The main rule source is the [S3 controls section](https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html).
+
 <!-- BEGIN_AUTOMATED_TF_DOCS_BLOCK -->
 ## Requirements
 
