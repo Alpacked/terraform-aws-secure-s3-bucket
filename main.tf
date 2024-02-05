@@ -7,10 +7,12 @@ module "secure_s3" {
 
   create_bucket = var.s3.create_bucket
 
-  attach_elb_log_delivery_policy           = var.s3.attach_elb_log_delivery_policy
-  attach_lb_log_delivery_policy            = var.s3.attach_lb_log_delivery_policy
-  attach_access_log_delivery_policy        = var.s3.attach_access_log_delivery_policy
-  attach_deny_insecure_transport_policy    = var.s3.attach_deny_insecure_transport_policy
+  attach_elb_log_delivery_policy    = var.s3.attach_elb_log_delivery_policy
+  attach_lb_log_delivery_policy     = var.s3.attach_lb_log_delivery_policy
+  attach_access_log_delivery_policy = var.s3.attach_access_log_delivery_policy
+  # [S3.5] S3 buckets should require requests to use Secure Socket Layer
+  # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-5
+  attach_deny_insecure_transport_policy    = true
   attach_require_latest_tls_policy         = var.s3.attach_require_latest_tls_policy
   policy                                   = var.s3.policy
   attach_policy                            = var.s3.attach_policy
@@ -31,8 +33,10 @@ module "secure_s3" {
   request_payer       = var.s3.request_payer
   website             = var.s3.website
 
-  cors_rule                            = var.s3.cors_rule
-  versioning                           = var.s3.versioning
+  cors_rule = var.s3.cors_rule
+  # [S3.14] S3 general purpose buckets should have versioning enabled
+  # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-14
+  versioning                           = true
   logging                              = var.s3.logging
   lifecycle_rule                       = concat(var.s3.lifecycle_rule, [for k, v in local.s3_lifecycle_rules : v if contains(var.s3.default_lifecycle_rules, k)])
   replication_configuration            = var.s3.replication_configuration
@@ -53,10 +57,18 @@ module "secure_s3" {
   inventory_source_bucket_arn       = var.s3.inventory_source_bucket_arn
   inventory_self_source_destination = var.s3.inventory_self_source_destination
 
-  block_public_acls       = var.s3.block_public_acls
-  block_public_policy     = var.s3.block_public_policy
-  ignore_public_acls      = var.s3.ignore_public_acls
-  restrict_public_buckets = var.s3.restrict_public_buckets
+  # ---
+  # [S3.2] S3 general purpose buckets should block public read access
+  # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-2
+  # [S3.3] S3 general purpose buckets should block public write access
+  # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-3
+  # [S3.8] S3 general purpose buckets should block public access
+  # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-8
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+  # ---
 
   analytics_configuration           = var.s3.analytics_configuration
   analytics_source_account_id       = var.s3.analytics_source_account_id

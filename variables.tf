@@ -7,9 +7,6 @@ variable "s3" {
     attach_lb_log_delivery_policy     = optional(bool, false)
     attach_access_log_delivery_policy = optional(bool, false)
 
-    # [S3.5] S3 buckets should require requests to use Secure Socket Layer
-    # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-5
-    attach_deny_insecure_transport_policy    = optional(bool, true)
     attach_require_latest_tls_policy         = optional(bool, false)
     policy                                   = optional(string)
     attach_policy                            = optional(bool, false)
@@ -31,22 +28,13 @@ variable "s3" {
     website             = optional(any, {})
 
     cors_rule = optional(any, [])
-    # [S3.14] S3 general purpose buckets should have versioning enabled
-    # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-14
-    versioning = optional(map(string), {
-      enabled = true
-    })
     # [S3.9] Server access logging should be enabled for S3 general purpose buckets
     # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-9
     logging = map(string)
 
-    default_lifecycle_rules   = optional(list(string), ["retain-x-delete-others"]) # Choose one of the predifined lifecycle rules
-    lifecycle_rule            = optional(any, [])
-    replication_configuration = optional(any, {})
-    # [DEPRECATED] [S3.4] S3 buckets should have server-side encryption enabled
-    # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-4
-    # ATTENTION: Amazon S3 now provides default encryption with S3 managed keys (SSE-S3) on new and existing S3 buckets.
-    # The encryption settings are unchanged for existing buckets that are encrypted with SSE-S3 or SSE-KMS server-side encryption.
+    default_lifecycle_rules              = optional(list(string), ["retain-x-delete-others"]) # Choose one of the predifined lifecycle rules
+    lifecycle_rule                       = optional(any, [])
+    replication_configuration            = optional(any, {})
     server_side_encryption_configuration = optional(any, {})
     intelligent_tiering                  = optional(any, {})
     object_lock_configuration            = optional(any, {})
@@ -63,15 +51,6 @@ variable "s3" {
     inventory_source_account_id       = optional(string)
     inventory_source_bucket_arn       = optional(string)
     inventory_self_source_destination = optional(bool, false)
-
-    # ---
-    # [S3.8] S3 general purpose buckets should block public access
-    # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-8
-    block_public_acls       = optional(bool, true)
-    block_public_policy     = optional(bool, true)
-    ignore_public_acls      = optional(bool, true)
-    restrict_public_buckets = optional(bool, true)
-    # ---
 
     analytics_configuration           = optional(any, [])
     analytics_source_account_id       = optional(string)
@@ -92,7 +71,7 @@ variable "s3_notification" {
     # [S3.11] S3 general purpose buckets should have event notifications enabled
     # https://docs.aws.amazon.com/securityhub/latest/userguide/s3-controls.html#s3-11
     create = optional(bool, true)
-    # We disable the policy creation to avoid accidental overriding the existing policy.
+    # We disabled the policy creation to avoid accidental overriding the existing policy.
     create_sns_policy = optional(bool, false)
     create_sqs_policy = optional(bool, false)
 
